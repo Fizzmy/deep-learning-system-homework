@@ -73,6 +73,8 @@ def test_compact(params, device):
     rhs = np_fn(_A)
     np.testing.assert_allclose(lhs.numpy(), rhs, atol=1e-5, rtol=1e-5)
 
+    
+
 
 reduce_params = [
     {"dims": (10,), "axis": 0},
@@ -531,6 +533,7 @@ def submit_ndarray_cuda_compact_setitem():
     B = RandC(4, 4)
     A[0:3, 1] = B[1:4, 0]
     MugradeSubmit(A)
+    
 
     A = RandC(2, 2, 2, 3)
     B = RandC(2, 2, 2, 3)

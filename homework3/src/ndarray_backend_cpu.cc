@@ -63,7 +63,28 @@ void Compact(const AlignedArray& a, AlignedArray* out, std::vector<uint32_t> sha
    *  function will implement here, so we won't repeat this note.)
    */
   /// BEGIN YOUR SOLUTION
-  
+  int len = shape.size();
+  size_t cnt = 0;
+  std::vector<uint32_t> ijk;
+  for (int i=0;i<len;i++) ijk.push_back(0);
+  while (1)
+  {
+    out->ptr[cnt++] = a.ptr[offset];
+
+    ijk[len-1] ++;
+    offset += strides[len-1];
+    int nwpos = len-1;
+    while (ijk[nwpos]==shape[nwpos])
+    {
+      if (nwpos==0) return;
+      offset -= strides[nwpos] * shape[nwpos];
+      ijk[nwpos] = 0;
+      nwpos--;
+      ijk[nwpos] ++;
+      offset += strides[nwpos];
+    }
+  }
+
   /// END YOUR SOLUTION
 }
 
@@ -80,7 +101,27 @@ void EwiseSetitem(const AlignedArray& a, AlignedArray* out, std::vector<uint32_t
    *   offset: offset of the *out* array (not a, which has zero offset, being compact)
    */
   /// BEGIN YOUR SOLUTION
-  
+  int len = shape.size();
+  size_t cnt = 0;
+  std::vector<uint32_t> ijk;
+  for (int i=0;i<len;i++) ijk.push_back(0);
+  while (1)
+  {
+    out->ptr[offset] = a.ptr[cnt++];
+
+    ijk[len-1] ++;
+    offset += strides[len-1];
+    int nwpos = len-1;
+    while (ijk[nwpos]==shape[nwpos])
+    {
+      if (nwpos==0) return;
+      offset -= strides[nwpos] * shape[nwpos];
+      ijk[nwpos] = 0;
+      nwpos--;
+      ijk[nwpos] ++;
+      offset += strides[nwpos];
+    }
+  }
   /// END YOUR SOLUTION
 }
 
@@ -101,7 +142,27 @@ void ScalarSetitem(const size_t size, scalar_t val, AlignedArray* out, std::vect
    */
 
   /// BEGIN YOUR SOLUTION
-  
+  int len = shape.size();
+  size_t cnt = 0;
+  std::vector<uint32_t> ijk;
+  for (int i=0;i<len;i++) ijk.push_back(0);
+  while (1)
+  {
+    out->ptr[offset] = val;
+
+    ijk[len-1] ++;
+    offset += strides[len-1];
+    int nwpos = len-1;
+    while (ijk[nwpos]==shape[nwpos])
+    {
+      if (nwpos==0) return;
+      offset -= strides[nwpos] * shape[nwpos];
+      ijk[nwpos] = 0;
+      nwpos--;
+      ijk[nwpos] ++;
+      offset += strides[nwpos];
+    }
+  }
   /// END YOUR SOLUTION
 }
 
@@ -145,7 +206,103 @@ void ScalarAdd(const AlignedArray& a, scalar_t val, AlignedArray* out) {
  */
 
 /// BEGIN YOUR SOLUTION
+void EwiseMul(const AlignedArray& a, const AlignedArray& b, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] * b.ptr[i];
+  }
+}
 
+void ScalarMul(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] * val;
+  }
+}
+
+void EwiseDiv(const AlignedArray& a, const AlignedArray& b, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] / b.ptr[i];
+  }
+}
+
+void ScalarDiv(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] / val;
+  }
+}
+
+void ScalarPower(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = pow(a.ptr[i], val);
+  }
+}
+
+void EwiseMaximum(const AlignedArray& a, const AlignedArray& b, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = std::max(a.ptr[i], b.ptr[i]);
+  }
+}
+
+void ScalarMaximum(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = std::max(a.ptr[i], val);
+  }
+}
+ 
+void EwiseEq(const AlignedArray& a, const AlignedArray& b, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] == b.ptr[i];
+  }
+}
+
+void ScalarEq(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] == val;
+  }
+}
+
+void EwiseGe(const AlignedArray& a, const AlignedArray& b, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] >= b.ptr[i];
+  }
+}
+
+void ScalarGe(const AlignedArray& a, scalar_t val, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = a.ptr[i] >= val;
+  }
+}
+
+void EwiseLog(const AlignedArray& a, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = log(a.ptr[i]);
+  }
+}
+
+void EwiseExp(const AlignedArray& a, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = exp(a.ptr[i]);
+  }
+}
+
+void EwiseTanh(const AlignedArray& a, AlignedArray* out) 
+{
+  for (size_t i = 0; i < a.size; i++) {
+    out->ptr[i] = tanh(a.ptr[i]);
+  }
+}
 /// END YOUR SOLUTION
 
 void Matmul(const AlignedArray& a, const AlignedArray& b, AlignedArray* out, uint32_t m, uint32_t n,
@@ -164,7 +321,16 @@ void Matmul(const AlignedArray& a, const AlignedArray& b, AlignedArray* out, uin
    */
 
   /// BEGIN YOUR SOLUTION
-  
+  for (int i=0;i<m;i++)
+    for (int j=0;j<p;j++)
+      out->ptr[i*p+j] = 0;
+  for (int i=0;i<m;i++)
+    for (int j=0;j<n;j++)
+    {
+      scalar_t tmp = a.ptr[i*n+j];
+      for (int k=0;k<p;k++)
+        out->ptr[i*p+k] += tmp * b.ptr[j*p+k];
+    }
   /// END YOUR SOLUTION
 }
 
@@ -194,7 +360,13 @@ inline void AlignedDot(const float* __restrict__ a,
   out = (float*)__builtin_assume_aligned(out, TILE * ELEM_SIZE);
 
   /// BEGIN YOUR SOLUTION
-  
+  for (int i=0;i<TILE;i++)
+    for (int j=0;j<TILE;j++)
+    {
+      scalar_t tmp = a[i*TILE+j];
+      for (int k=0;k<TILE;k++)
+        out[i*TILE+k] += tmp * b[j*TILE+k];
+    }
   /// END YOUR SOLUTION
 }
 
@@ -220,7 +392,16 @@ void MatmulTiled(const AlignedArray& a, const AlignedArray& b, AlignedArray* out
    *
    */
   /// BEGIN YOUR SOLUTION
-  
+  for (int i=0;i<m;i++)
+    for (int j=0;j<p;j++)
+      out->ptr[i*p+j] = 0;
+  for (int i=0;i<m/TILE;i++)
+    for (int j=0;j<p/TILE;j++)
+    {
+      scalar_t* c = &out->ptr[i * TILE * p + j * TILE * TILE];
+      for (int k=0;k<n/TILE;k++)
+        AlignedDot(&a.ptr[i * TILE * n + k * TILE * TILE],&b.ptr[k * TILE * p + j * TILE * TILE],c);
+    }
   /// END YOUR SOLUTION
 }
 
@@ -235,7 +416,14 @@ void ReduceMax(const AlignedArray& a, AlignedArray* out, size_t reduce_size) {
    */
 
   /// BEGIN YOUR SOLUTION
-  
+  size_t cnt = 0;
+  for (size_t i=0; i < a.size; i+=reduce_size)
+  {
+    out->ptr[cnt] = a.ptr[i];
+    for (size_t j=1; j < reduce_size;j++)
+      out->ptr[cnt] = std::max(out->ptr[cnt], a.ptr[i + j]);
+    cnt++;
+  }
   /// END YOUR SOLUTION
 }
 
@@ -250,7 +438,14 @@ void ReduceSum(const AlignedArray& a, AlignedArray* out, size_t reduce_size) {
    */
 
   /// BEGIN YOUR SOLUTION
-  
+  size_t cnt = 0;
+  for (size_t i=0; i < a.size; i+=reduce_size)
+  {
+    out->ptr[cnt] = 0;
+    for (size_t j=0; j < reduce_size;j++)
+      out->ptr[cnt] += a.ptr[i+j];
+    cnt++;
+  }
   /// END YOUR SOLUTION
 }
 
@@ -292,22 +487,22 @@ PYBIND11_MODULE(ndarray_backend_cpu, m) {
   m.def("ewise_add", EwiseAdd);
   m.def("scalar_add", ScalarAdd);
 
-  // m.def("ewise_mul", EwiseMul);
-  // m.def("scalar_mul", ScalarMul);
-  // m.def("ewise_div", EwiseDiv);
-  // m.def("scalar_div", ScalarDiv);
-  // m.def("scalar_power", ScalarPower);
+  m.def("ewise_mul", EwiseMul);
+  m.def("scalar_mul", ScalarMul);
+  m.def("ewise_div", EwiseDiv);
+  m.def("scalar_div", ScalarDiv);
+  m.def("scalar_power", ScalarPower);
 
-  // m.def("ewise_maximum", EwiseMaximum);
-  // m.def("scalar_maximum", ScalarMaximum);
-  // m.def("ewise_eq", EwiseEq);
-  // m.def("scalar_eq", ScalarEq);
-  // m.def("ewise_ge", EwiseGe);
-  // m.def("scalar_ge", ScalarGe);
+  m.def("ewise_maximum", EwiseMaximum);
+  m.def("scalar_maximum", ScalarMaximum);
+  m.def("ewise_eq", EwiseEq);
+  m.def("scalar_eq", ScalarEq);
+  m.def("ewise_ge", EwiseGe);
+  m.def("scalar_ge", ScalarGe);
 
-  // m.def("ewise_log", EwiseLog);
-  // m.def("ewise_exp", EwiseExp);
-  // m.def("ewise_tanh", EwiseTanh);
+  m.def("ewise_log", EwiseLog);
+  m.def("ewise_exp", EwiseExp);
+  m.def("ewise_tanh", EwiseTanh);
 
   m.def("matmul", Matmul);
   m.def("matmul_tiled", MatmulTiled);

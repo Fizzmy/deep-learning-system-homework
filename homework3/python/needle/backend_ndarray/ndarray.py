@@ -241,7 +241,7 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        return self.as_strided(new_shape,self.compact_strides(new_shape))
         ### END YOUR SOLUTION
 
     def permute(self, new_axes):
@@ -264,7 +264,17 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        shape = []
+        for i in new_axes:
+            shape.append(self.shape[i])
+        shape = tuple(shape)
+
+        strides = []
+        for i in new_axes:
+            strides.append(self.strides[i])
+        strides = tuple(strides)
+
+        return self.as_strided(shape,strides)
         ### END YOUR SOLUTION
 
     def broadcast_to(self, new_shape):
@@ -285,7 +295,22 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        assert (len(new_shape) == len(self.shape))
+        for i in range(len(new_shape)):
+            if self.shape[i]!=1:
+                assert (new_shape[i] == self.shape[i])
+        
+        strides = []
+        for i in range(len(self.strides)):
+            if new_shape[i] == self.shape[i]:
+                strides.append(self.strides[i])
+            else:
+                strides.append(0)
+        strides = tuple(strides)
+
+        return self.as_strided(new_shape,strides)
+
+
         ### END YOUR SOLUTION
 
     ### Get and set elements
@@ -296,7 +321,7 @@ class NDArray:
         if start == None:
             start = 0
         if start < 0:
-            start = self.shape[dim]
+            start = self.shape[dim] + start
         if stop == None:
             stop = self.shape[dim]
         if stop < 0:
@@ -348,7 +373,18 @@ class NDArray:
         assert len(idxs) == self.ndim, "Need indexes equal to number of dimensions"
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        offset = 0
+        strides = []
+        shape = []
+        for i in range(len(idxs)):
+            strides.append(self.strides[i] * idxs[i].step)
+            offset += self.strides[i] * idxs[i].start
+            shape.append((idxs[i].stop - idxs[i].start + idxs[i].step - 1 ) // idxs[i].step)
+
+        return NDArray.make(
+            tuple(shape), strides=tuple(strides), device=self.device, handle=self._handle, offset=offset
+        )
+        
         ### END YOUR SOLUTION
 
     def __setitem__(self, idxs, other):
@@ -495,7 +531,7 @@ class NDArray:
                 )
 
             t = self.device.__tile_size__
-            a = tile(self.compact(), t).compact()
+            a = tile(self.compact(), t).compact() 
             b = tile(other.compact(), t).compact()
             out = NDArray.make((a.shape[0], b.shape[1], t, t), device=self.device)
             self.device.matmul_tiled(a._handle, b._handle, out._handle, m, n, p)
