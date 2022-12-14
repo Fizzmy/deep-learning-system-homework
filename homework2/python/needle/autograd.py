@@ -154,7 +154,11 @@ class Value:
             *[x.realize_cached_data() for x in self.inputs]
         )
         for i in range(len(self.inputs)):
-            assert self.cached_data.dtype == self.inputs[i].dtype or self.inputs[i].dtype==bool
+            assert self.cached_data.dtype == self.inputs[i].dtype or self.inputs[i].dtype==bool, "%d %s %s" % (
+                i,
+                self.inputs[i].dtype,
+                self.cached_data.dtype,
+            )
         self.cached_data
         return self.cached_data
 
