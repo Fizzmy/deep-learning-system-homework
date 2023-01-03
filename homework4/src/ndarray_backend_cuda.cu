@@ -421,9 +421,9 @@ __global__ void MatmulKernel(const scalar_t* a,const scalar_t* b, scalar_t* out,
 
   for (int p = 0; p < (N+TILE-1)/TILE; ++p)
   {
-    if (p * TILE + tx < N)
+    if (Row < M && p * TILE + tx < N)
       ds_M[ty][tx] = a[Row * N + p * TILE + tx];
-    if (p * TILE + ty < N)
+    if (Col < P && p * TILE + ty < N)
       ds_N[ty][tx] = b[(p * TILE + ty ) * P + Col];
     __syncthreads();
     if (Row < M && Col < P)
@@ -481,8 +481,8 @@ __global__ void ReduceMaxKernel(const scalar_t* a, scalar_t* out, size_t reduce_
   int tid = threadIdx.x;
   int base = blockIdx.x * reduce_size;
 
-  maxn[tid] = a[ base + tid ];
-  for (int i = tid + blockDim.x; i < reduce_size; i += blockDim.x)
+  maxn[tid] = -1e18;
+  for (int i = tid; i < reduce_size; i += blockDim.x)
   {
     maxn[tid] = fmaxf(maxn[tid],a[base + i]);
   }

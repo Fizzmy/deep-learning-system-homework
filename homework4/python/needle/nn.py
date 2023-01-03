@@ -193,7 +193,10 @@ class BatchNorm1d(Module):
             Var_x = ops.broadcast_to(ops.reshape(Var_x,tuple(shape_l)),x.shape)
             return ops.broadcast_to(ops.reshape(self.weight,tuple(shape_l)),x.shape) * (x-E_x)/((Var_x +self.eps)**0.5) + ops.broadcast_to(ops.reshape(self.bias,tuple(shape_l)),x.shape)
         else:
-            return self.weight * (x-self.running_mean)/((self.running_var +self.eps)**0.5) + self.bias
+            shape_l = list(x.shape)
+            shape_l = shape_l[1:]
+            shape_l.insert(0,1)
+            return ops.broadcast_to(ops.reshape(self.weight,tuple(shape_l)),x.shape) * (x-ops.broadcast_to(ops.reshape(self.running_mean,tuple(shape_l)),x.shape))/((ops.broadcast_to(ops.reshape(self.running_var,tuple(shape_l)),x.shape) +self.eps)**0.5) + ops.broadcast_to(ops.reshape(self.weight,tuple(shape_l)),x.shape)
         ### END YOUR SOLUTION
 
 class BatchNorm2d(BatchNorm1d):

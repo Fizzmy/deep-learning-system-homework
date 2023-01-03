@@ -262,7 +262,7 @@ class Summation(TensorOp):
         ### BEGIN YOUR SOLUTION
         if self.axes is None:
             return array_api.summation(a)
-        if self.axes is int:
+        if type(self.axes) is int:
             self.axes = self.axes,
         for x in range(len(self.axes)-1,-1,-1):
             a = array_api.summation(a,self.axes[x])
@@ -277,7 +277,7 @@ class Summation(TensorOp):
             for i in range(len(out_shape)):
                 out_shape[i]=1
         else:
-            if self.axes is int:
+            if type(self.axes) is int:
                 self.axes = self.axes,
             for x in self.axes:
                 out_shape[x]=1
@@ -409,7 +409,7 @@ class LogSumExp(TensorOp):
             for i in range(len(out_shape)):
                 out_shape[i]=1
         else:
-            if self.axes is int:
+            if type(self.axes) is int:
                 self.axes = self.axes,
             for x in self.axes:
                 out_shape[x]=1
