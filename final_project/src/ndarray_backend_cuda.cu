@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <nccl.h>
 
 namespace needle {
 namespace cuda {
@@ -27,6 +28,13 @@ struct CudaArray {
   scalar_t* ptr;
   size_t size;
 };
+
+struct CudaCommAndStream{
+    int nRanks,localRank,myRank;
+    ncclUniqueId id;
+    ncclComm_t comm;
+    cudaStream_t s;
+}mess;
 
 struct CudaDims {
   dim3 block, grid;
@@ -413,13 +421,13 @@ __global__ void MatmulKernel(const scalar_t* a,const scalar_t* b, scalar_t* out,
 {
   __shared__ float ds_M[TILE][TILE];
   __shared__ float ds_N[TILE][TILE];
-  int bx = blockIdx.x; int by = blockIdx.y;
-  int tx = threadIdx.x; int ty = threadIdx.y;
-  int Row = by * blockDim.y + ty;
-  int Col = bx * blockDim.x + tx;
+  size_t bx = blockIdx.x; size_t by = blockIdx.y;
+  size_t tx = threadIdx.x; size_t ty = threadIdx.y;
+  size_t Row = by * blockDim.y + ty;
+  size_t Col = bx * blockDim.x + tx;
   scalar_t Pvalue = 0;
 
-  for (int p = 0; p < (N+TILE-1)/TILE; ++p)
+  for (size_t p = 0; p < (N+TILE-1)/TILE; ++p)
   {
     if (Row < M && p * TILE + tx < N)
       ds_M[ty][tx] = a[Row * N + p * TILE + tx];
@@ -428,7 +436,7 @@ __global__ void MatmulKernel(const scalar_t* a,const scalar_t* b, scalar_t* out,
     __syncthreads();
     if (Row < M && Col < P)
     {
-      for (int i = 0; i < TILE; ++i)
+      for (size_t i = 0; i < TILE; ++i)
         if (p * TILE + i < N)
           Pvalue += ds_M[ty][i] * ds_N[i][tx];
     }
@@ -478,17 +486,17 @@ void Matmul(const CudaArray& a, const CudaArray& b, CudaArray* out, uint32_t M, 
 __global__ void ReduceMaxKernel(const scalar_t* a, scalar_t* out, size_t reduce_size)
 {
   __shared__ float maxn[BASE_THREAD_NUM];
-  int tid = threadIdx.x;
-  int base = blockIdx.x * reduce_size;
+  size_t tid = threadIdx.x;
+  size_t base = blockIdx.x * reduce_size;
 
   maxn[tid] = -1e18;
-  for (int i = tid; i < reduce_size; i += blockDim.x)
+  for (size_t i = tid; i < reduce_size; i += blockDim.x)
   {
     maxn[tid] = fmaxf(maxn[tid],a[base + i]);
   }
   __syncthreads();
 
-  for(int s = blockDim.x/2; s > 0; s>>=1){   
+  for(size_t s = blockDim.x/2; s > 0; s>>=1){   
     if(tid < s && tid + s < reduce_size && tid + s < blockDim.x)
         maxn[tid] = fmaxf(maxn[tid],maxn[tid + s]);
     __syncthreads();
@@ -517,17 +525,17 @@ void ReduceMax(const CudaArray& a, CudaArray* out, size_t reduce_size) {
 __global__ void ReduceSumKernel(const scalar_t* a, scalar_t* out, size_t reduce_size)
 {
   __shared__ float maxn[BASE_THREAD_NUM];
-  int tid = threadIdx.x;
-  int base = blockIdx.x * reduce_size;
+  size_t tid = threadIdx.x;
+  size_t base = blockIdx.x * reduce_size;
 
   maxn[tid] = 0;
-  for (int i = tid; i < reduce_size; i += blockDim.x)
+  for (size_t i = tid; i < reduce_size; i += blockDim.x)
   {
     maxn[tid] += a[base + i];
   }
   __syncthreads();
 
-  for(int s = blockDim.x/2; s > 0; s>>=1){   
+  for(size_t s = blockDim.x/2; s > 0; s>>=1){   
     if(tid < s && tid + s < reduce_size && tid + s < blockDim.x)
         maxn[tid] += maxn[tid + s];
     __syncthreads();
@@ -550,6 +558,36 @@ void ReduceSum(const CudaArray& a, CudaArray* out, size_t reduce_size) {
   dim3 grid = dim3(out->size, 1, 1), block = dim3(BASE_THREAD_NUM, 1, 1);
   ReduceSumKernel<<<grid, block>>>(a.ptr, out->ptr, reduce_size);
   /// END YOUR SOLUTION
+}
+
+void SetDevice(int id)
+{
+    mess.localRank=id;
+    cudaSetDevice(id);
+}
+
+std::vector<uint8_t> GetId()
+{
+    ncclGetUniqueId(&mess.id);
+    auto vec = std::vector<uint8_t>(reinterpret_cast<uint8_t*>(&mess.id),reinterpret_cast<uint8_t*>(&mess.id) + NCCL_UNIQUE_ID_BYTES);
+    return vec;
+}
+
+void InitNccl(std::vector<uint8_t> vec,int rank,int size)
+{
+    mess.nRanks = size;
+    mess.myRank = rank;
+    std::memcpy(&mess.id, vec.data(), vec.size());
+    ncclCommInitRank(&mess.comm, mess.nRanks, mess.id, mess.myRank);
+    cudaStreamCreate(&mess.s);
+}
+
+void AllReduce(const CudaArray& a, CudaArray* out)
+{
+    ScalarDiv(a,mess.nRanks,out);
+    cudaDeviceSynchronize();
+    ncclAllReduce((const void*)out->ptr, (void*)out->ptr, a.size, ncclFloat, ncclSum, mess.comm, mess.s);
+    cudaStreamSynchronize(mess.s);
 }
 
 }  // namespace cuda
@@ -621,4 +659,9 @@ PYBIND11_MODULE(ndarray_backend_cuda, m) {
 
   m.def("reduce_max", ReduceMax);
   m.def("reduce_sum", ReduceSum);
+
+  m.def("set_device", SetDevice);
+  m.def("get_id", GetId);
+  m.def("init_nccl", InitNccl);
+  m.def("allreduce", AllReduce);
 }

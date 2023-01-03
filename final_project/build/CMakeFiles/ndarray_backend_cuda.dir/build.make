@@ -53,10 +53,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gehao/lxy/dls/homework4
+CMAKE_SOURCE_DIR = /home/gehao/lxy/dls/final_project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gehao/lxy/dls/homework4/build
+CMAKE_BINARY_DIR = /home/gehao/lxy/dls/final_project/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/ndarray_backend_cuda.dir/depend.make
@@ -329,6 +329,7 @@ CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_b
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/linux/limits.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/locale.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/math.h
+CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/nccl.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/pthread.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/sched.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/include/stdc-predef.h
@@ -462,7 +463,11 @@ CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_b
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/crt/sm_70_rt.hpp
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/crt/sm_80_rt.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/crt/sm_80_rt.hpp
+CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_bf16.h
+CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_bf16.hpp
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_device_runtime_api.h
+CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_fp16.h
+CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_fp16.hpp
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_runtime.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_runtime_api.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/cuda_surface_types.h
@@ -501,26 +506,27 @@ CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_b
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: /usr/local/cuda/include/vector_types.h
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o.cmake
 CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o: ../src/ndarray_backend_cuda.cu
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/gehao/lxy/dls/homework4/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building NVCC (Device) object CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o"
-	cd /home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src && /usr/local/bin/cmake -E make_directory /home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src/.
-	cd /home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src && /usr/local/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING= -D generated_file:STRING=/home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src/./ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o -D generated_cubin_file:STRING=/home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src/./ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o.cubin.txt -P /home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o.cmake
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/gehao/lxy/dls/final_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building NVCC (Device) object CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o"
+	cd /home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src && /usr/local/bin/cmake -E make_directory /home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src/.
+	cd /home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src && /usr/local/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING= -D generated_file:STRING=/home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src/./ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o -D generated_cubin_file:STRING=/home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src/./ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o.cubin.txt -P /home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o.cmake
 
 # Object files for target ndarray_backend_cuda
 ndarray_backend_cuda_OBJECTS =
 
 # External object files for target ndarray_backend_cuda
 ndarray_backend_cuda_EXTERNAL_OBJECTS = \
-"/home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o"
+"/home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o"
 
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/ndarray_backend_cuda.dir/build.make
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: /usr/local/cuda/lib64/libcudart_static.a
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: /usr/lib/x86_64-linux-gnu/librt.so
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: /usr/local/cuda/lib64/libcudart.so
+../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: /usr/lib/x86_64-linux-gnu/libnccl.so.2.13.4
 ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/ndarray_backend_cuda.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gehao/lxy/dls/homework4/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared module ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gehao/lxy/dls/final_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared module ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ndarray_backend_cuda.dir/link.txt --verbose=$(VERBOSE)
-	/usr/bin/strip /home/gehao/lxy/dls/homework4/python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so
+	/usr/bin/strip /home/gehao/lxy/dls/final_project/python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so
 
 # Rule to build all files generated by this target.
 CMakeFiles/ndarray_backend_cuda.dir/build: ../python/needle/backend_ndarray/ndarray_backend_cuda.cpython-37m-x86_64-linux-gnu.so
@@ -531,6 +537,6 @@ CMakeFiles/ndarray_backend_cuda.dir/clean:
 .PHONY : CMakeFiles/ndarray_backend_cuda.dir/clean
 
 CMakeFiles/ndarray_backend_cuda.dir/depend: CMakeFiles/ndarray_backend_cuda.dir/src/ndarray_backend_cuda_generated_ndarray_backend_cuda.cu.o
-	cd /home/gehao/lxy/dls/homework4/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gehao/lxy/dls/homework4 /home/gehao/lxy/dls/homework4 /home/gehao/lxy/dls/homework4/build /home/gehao/lxy/dls/homework4/build /home/gehao/lxy/dls/homework4/build/CMakeFiles/ndarray_backend_cuda.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/gehao/lxy/dls/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gehao/lxy/dls/final_project /home/gehao/lxy/dls/final_project /home/gehao/lxy/dls/final_project/build /home/gehao/lxy/dls/final_project/build /home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ndarray_backend_cuda.dir/depend
 

@@ -25,6 +25,8 @@ class SGD(Optimizer):
 
     def step(self):
         ### BEGIN YOUR SOLUTION
+        for x in self.params:
+            x.grad.data = x.grad.data.allreduce()
         if self.u==[]:
             for x in self.params:
                 self.u.append(0 * x.grad.data)
@@ -58,6 +60,8 @@ class Adam(Optimizer):
 
     def step(self):
         ### BEGIN YOUR SOLUTION
+        for x in self.params:
+            x.grad.cached_data = x.grad.realize_cached_data().allreduce()
         if self.m==[]:
             for x in self.params:
                 self.m.append(0 * x.grad.data)

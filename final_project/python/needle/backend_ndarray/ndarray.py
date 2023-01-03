@@ -13,17 +13,19 @@ def prod(x):
 class BackendDevice:
     """A backend device, wraps the implementation module."""
 
-    def __init__(self, name, mod):
+    def __init__(self, name, mod, device_id=-1):
         self.name = name
         self.mod = mod
+        self.device_id = device_id
 
     def __eq__(self, other):
-        return self.name == other.name
+        return self.name == other.name and self.device_id == other.device_id
 
     def __repr__(self):
-        return self.name + "()"
+        return self.name + str(self.device_id) + "()"
 
     def __getattr__(self, name):
+        # print(name)
         return getattr(self.mod, name)
 
     def enabled(self):
@@ -55,12 +57,15 @@ class BackendDevice:
         return arr
 
 
-def cuda():
+def cuda(device_id = 0):
     """Return cuda device"""
     try:
         from . import ndarray_backend_cuda
 
-        return BackendDevice("cuda", ndarray_backend_cuda)
+        device = BackendDevice("cuda", ndarray_backend_cuda, device_id)
+        device.set_device(device_id)
+        return device
+
     except ImportError:
         return BackendDevice("cuda", None)
 
@@ -83,7 +88,7 @@ def all_devices():
     """return a list of all available devices"""
     return [cpu(), cuda(), cpu_numpy()]
 
-
+from mpi4py import MPI
 class NDArray:
     """A generic ND array class that may contain multiple different backends
     i.e., a Numpy backend, a native CPU backend, or a GPU backend.
@@ -636,6 +641,10 @@ class NDArray:
         a[tuple(idx)] = self
         return a
         ### END YOUR SOLUTION
+    def allreduce(self):
+        out = NDArray.make(self.shape, device=self.device)
+        self.device.allreduce(self.compact()._handle, out._handle)
+        return out
 
 
 def array(a, dtype="float32", device=None):

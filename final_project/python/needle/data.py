@@ -104,11 +104,15 @@ class DataLoader:
         dataset: Dataset,
         batch_size: Optional[int] = 1,
         shuffle: bool = False,
+        device = None,
+        dtype = None
     ):
 
         self.dataset = dataset
         self.shuffle = shuffle
         self.batch_size = batch_size
+        self.device = device
+        self.dtype = dtype
         if not self.shuffle:
             self.ordering = np.array_split(np.arange(len(dataset)), 
                                            range(batch_size, len(dataset), batch_size))
@@ -131,7 +135,7 @@ class DataLoader:
         idx = self.ordering[self.n]
         L = []
         for j in range(len(self.dataset[0])):
-            L.append(Tensor([self.dataset[i][j] for i in idx]))
+            L.append(Tensor([self.dataset[i][j] for i in idx],device=self.device))
         self.n += 1
         return tuple(L)
         ### END YOUR SOLUTION
