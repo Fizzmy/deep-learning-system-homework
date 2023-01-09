@@ -590,6 +590,12 @@ void AllReduce(const CudaArray& a, CudaArray* out)
     cudaStreamSynchronize(mess.s);
 }
 
+void BroadCast(const CudaArray& a, CudaArray* out,int rank)
+{
+    ncclBroadcast((const void*)a.ptr, (void*)out->ptr, a.size, ncclFloat, rank, mess.comm, mess.s);
+    cudaStreamSynchronize(mess.s);
+}
+
 }  // namespace cuda
 }  // namespace needle
 
@@ -664,4 +670,5 @@ PYBIND11_MODULE(ndarray_backend_cuda, m) {
   m.def("get_id", GetId);
   m.def("init_nccl", InitNccl);
   m.def("allreduce", AllReduce);
+  m.def("broadcast", BroadCast);
 }

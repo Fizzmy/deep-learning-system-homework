@@ -1,3 +1,3 @@
 # Final project
 
-distribute learning
+distribute learning with nccl

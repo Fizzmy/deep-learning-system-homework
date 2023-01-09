@@ -646,6 +646,11 @@ class NDArray:
         self.device.allreduce(self.compact()._handle, out._handle)
         return out
 
+    def broadcast(self,rank):
+        out = NDArray.make(self.shape, device=self.device)
+        self.device.broadcast(self.compact()._handle, out._handle,rank)
+        return out
+
 
 def array(a, dtype="float32", device=None):
     """ Convenience methods to match numpy a bit more closely."""

@@ -1,4 +1,0 @@
-/home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cpu.dir
-/home/gehao/lxy/dls/final_project/build/CMakeFiles/ndarray_backend_cuda.dir
-/home/gehao/lxy/dls/final_project/build/CMakeFiles/edit_cache.dir
-/home/gehao/lxy/dls/final_project/build/CMakeFiles/rebuild_cache.dir
